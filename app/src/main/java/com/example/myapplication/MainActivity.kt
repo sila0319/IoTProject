@@ -1,7 +1,7 @@
 package com.example.myapplication
 
 import android.Manifest
-import android.R
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
@@ -29,6 +29,7 @@ import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.request.DataSourcesRequest
 import com.google.android.gms.fitness.request.OnDataPointListener
 import com.google.android.gms.fitness.request.SensorRequest
+import org.airpage.heartbeat.R
 import java.util.concurrent.TimeUnit
 
 
@@ -39,12 +40,13 @@ class MainActivity : AppCompatActivity() {
     private var onDataPointListener: OnDataPointListener? = null
     private val missingPermission: MutableList<String> = ArrayList()
     private var bCheckStarted = false
-    private var bGoogleConnected = falsea
+    private var bGoogleConnected = false
     private var btnStart: Button? = null
     private var spinner: ProgressBar? = null
     private var powerManager: PowerManager? = null
     private var wakeLock: WakeLock? = null
     private var textMon: TextView? = null
+    @SuppressLint("InvalidWakeLockTag")
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -65,17 +67,17 @@ class MainActivity : AppCompatActivity() {
         initGoogleApiClient()
         textMon = findViewById<TextView>(R.id.textMon)
         spinner = findViewById<ProgressBar>(R.id.progressBar1)
-        spinner.setVisibility(View.INVISIBLE)
-        btnStart = findViewById<Button>(R.id.btnStart)
-        btnStart.setText("Wait please ...")
-        btnStart.setEnabled(false)
-        btnStart.setOnClickListener(View.OnClickListener {
+        spinner!!.setVisibility(View.INVISIBLE)
+        btnStart = findViewById<Button>(R.id.btnStart!!)
+        btnStart!!.setText("Wait please ...")
+        btnStart!!.setEnabled(false)
+        btnStart!!.setOnClickListener(View.OnClickListener {
             if (bCheckStarted) {
-                //btnStart.setText(R.string.msg_start);
-                btnStart.setText("Start")
+                //btnStart!!.setText(R.string.msg_start);
+                btnStart!!!!.setText("Start")
                 bCheckStarted = false
                 unregisterFitnessDataListener()
-                spinner.setVisibility(View.INVISIBLE)
+                spinner!!.setVisibility(View.INVISIBLE)
                 wakeLock!!.release()
             } else {
                 //버튼을 처음 클릭할 경우 Google API 클라이언트에 로그인이 되어있는 상태인지를 확인합니다.
@@ -85,10 +87,10 @@ class MainActivity : AppCompatActivity() {
                     findDataSources()
                     //심박수의 측정이 시작되면 심박수 정보를 얻을 콜백함수를 등록/설정하는 함수를 호출합니다
                     registerDataSourceListener(DataType.TYPE_HEART_RATE_BPM)
-                    btnStart.setText("Stop")
-                    //btnStart.setText(R.string.msg_stop);
+                    btnStart!!.setText("Stop")
+                    //btnStart!!.setText(R.string.msg_stop);
                     bCheckStarted = true
-                    spinner.setVisibility(View.VISIBLE)
+                    spinner!!.setVisibility(View.VISIBLE)
                     //화면이 꺼지지 않도록 설정합니다
                     wakeLock!!.acquire()
                 } else {
@@ -109,8 +111,8 @@ class MainActivity : AppCompatActivity() {
                     override fun onConnected(bundle: Bundle?) {
                         Log.d(TAG, "initGoogleApiClient() onConnected good...")
                         bGoogleConnected = true
-                        btnStart!!.text = "Start"
-                        btnStart!!.isEnabled = true
+                        btnStart!!!!.text = "Start"
+                        btnStart!!!!.isEnabled = true
                     }
 
                     override fun onConnectionSuspended(i: Int) {
@@ -298,6 +300,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+       super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AUTH_REQUEST) {
             authInProgress = false
             if (resultCode == RESULT_OK) {
